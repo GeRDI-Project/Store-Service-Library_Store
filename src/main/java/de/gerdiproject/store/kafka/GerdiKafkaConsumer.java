@@ -11,13 +11,13 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.Queue;
 
-public class GeRDIKafkaConsumer extends Thread {
+public class GerdiKafkaConsumer extends Thread {
 
     private final Queue<ResearchData> queue;
     private final KafkaConsumer<String, ByteBuffer> consumer;
     private final String id;
 
-    public GeRDIKafkaConsumer(Queue<ResearchData> queue, String id){
+    public GerdiKafkaConsumer(Queue<ResearchData> queue, String id){
         this.queue = queue;
         this.id = id;
         Properties props = new Properties();
