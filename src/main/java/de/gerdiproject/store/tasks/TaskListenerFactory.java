@@ -7,7 +7,7 @@ import java.util.Queue;
 
 public class TaskListenerFactory {
 
-    private static final Queue<ResearchData> queue;
+    private final Queue<ResearchData> queue;
 
     public TaskListenerFactory(Queue<ResearchData> queue) {
         this.queue = queue;

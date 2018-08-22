@@ -25,7 +25,8 @@ public class StoreConfigurator {
         this.inited = true;
     }
 
-    public static TaskListener init(String id){
+    public TaskListener init(String id){
+        return this.taskListenerFactory.createTaskListener();
     }
 
 
