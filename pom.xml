@@ -3,18 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+
 
     <parent>
         <groupId>de.gerdi-project</groupId>
@@ -26,9 +15,30 @@
     <artifactId>store-service-library</artifactId>
     <version>0.1.1-SNAPSHOT</version>
 
+    <name>GeRDI Store Service Library</name>
+    <description>This library provides some functionality to implement an own Store Service which can be integrated into the GeRDI infrastructure.</description>
+    <inceptionYear>2018</inceptionYear>
+
     <properties>
         <java.version>1.8</java.version>
     </properties>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>ntd</id>
+            <name>Nelson Tavares de Sousa</name>
+            <email>tavaresdesousa@email.uni-kiel.de</email>
+            <organization>Kiel University</organization>
+            <timezone>Europe/Berlin</timezone>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
@@ -64,4 +74,39 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+                    <properties>
+                        <owner>Nelson Tavares de Sousa</owner>
+                        <email>tavaresdesousa@email.uni-kiel.de</email>
+                    </properties>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
