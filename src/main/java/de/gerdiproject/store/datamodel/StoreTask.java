@@ -19,11 +19,15 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * This class represents a store task as requested by a user.
+ */
 public @Data class StoreTask {
 
     private String bookmarkId;
     private String bookmarkName;
     private List<String> docs;
     private String userId;
+    private boolean started = false;
 
 }

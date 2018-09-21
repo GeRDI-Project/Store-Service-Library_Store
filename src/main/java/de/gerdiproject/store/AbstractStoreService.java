@@ -19,15 +19,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.gerdiproject.store.datamodel.*;
 import de.gerdiproject.store.handler.PostRootRoute;
+import de.gerdiproject.store.util.CacheGarbageCollectionTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static spark.Spark.*;
 
@@ -42,10 +40,12 @@ public abstract class AbstractStoreService<E extends ICredentials> {
             .getLogger(AbstractStoreService.class);
     private final Map<String, CacheElement<E>> CACHE_MAP = new HashMap<>(); // Possible to abstract here; allows for different implementations
     private final Properties props;
+    private final Timer timer = new Timer(true);
     private boolean running = false;
 
 
     public AbstractStoreService(Properties props) {
+        timer.schedule(new CacheGarbageCollectionTask<E>(this.CACHE_MAP), 300000, 300000);
         this.props = props;
     }
 
@@ -89,9 +89,9 @@ public abstract class AbstractStoreService<E extends ICredentials> {
      * This method is executed once before any copy is triggered.
      * May be overwritten to perform tasks before starting to copy data sets.
      *
-     * @param task
+     * @param creds The stored credentials, may be null if no credentials were stored
      */
-    protected void preCopy(StoreTask task) {
+    protected void preCopy(E creds) {
     }
 
     /**
@@ -154,9 +154,19 @@ public abstract class AbstractStoreService<E extends ICredentials> {
             final String session = request.params("sessionId");
             final StoreTask task = CACHE_MAP.get(session).getTask();
             final E creds = CACHE_MAP.get(session).getCredentials();
-            this.preCopy(task);
+
+            if (task.isStarted()) {
+                return "Process already started";
+            } else {
+                task.setStarted(true);
+            }
+
+            this.preCopy(creds);
+            boolean acknowledgedAll = true;
             for (TaskElement entry : CACHE_MAP.get(session).getProgress()) {
-                this.copyFile(creds, targetDir, entry);
+                if (acknowledgedAll & this.copyFile(creds, targetDir, entry)) {
+                    acknowledgedAll = true;
+                } else acknowledgedAll = false;
             }
             return "";
         });
