@@ -27,11 +27,6 @@ public class Progress implements Iterable<TaskElement> {
         }
     }
 
-    public void setProgressOn(String id, Integer percent){
-        if (percent > 100 || percent < 0) throw new IllegalArgumentException("Percent must be a value between 0 and 100");
-        map.get(id).setProgressInPercent(percent);
-    }
-
     @Override
     public Iterator<TaskElement> iterator() {
         return map.values().iterator();

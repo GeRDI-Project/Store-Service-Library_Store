@@ -18,7 +18,7 @@ package de.gerdiproject.store.handler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.gerdiproject.store.datamodel.CacheElement;
-import de.gerdiproject.store.datamodel.Credentials;
+import de.gerdiproject.store.datamodel.ICredentials;
 import de.gerdiproject.store.datamodel.StoreTask;
 import de.gerdiproject.store.util.RandomString;
 import spark.Request;
@@ -27,12 +27,21 @@ import spark.Route;
 
 import java.util.Map;
 
-public class PostRootRoute<E extends Credentials> implements Route {
+/**
+ * This class represent a handler for a post request on the root URL
+ *
+ * @param <E> The type used to store the credentials. Must implement the ICredentials interface.
+ */
+public class PostRootRoute<E extends ICredentials> implements Route {
 
     private static final RandomString RDM_GENERATOR = new RandomString();
     private final Map<String, CacheElement<E>> cacheMap;
     private final Gson gson = new GsonBuilder().create();
 
+    /**
+     * Just this class's constructur
+     * @param cacheMap The map which is used to cache the store requests
+     */
     public PostRootRoute( Map<String, CacheElement<E>> cacheMap){
         this.cacheMap = cacheMap;
     }

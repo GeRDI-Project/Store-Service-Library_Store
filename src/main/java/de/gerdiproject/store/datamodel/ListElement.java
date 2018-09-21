@@ -17,6 +17,9 @@ package de.gerdiproject.store.datamodel;
 
 import lombok.Data;
 
+/**
+ * This class represents an element, such as a file or subdirectory.
+ */
 public @Data(staticConstructor = "of") class ListElement {
 
     private final String displayName;
