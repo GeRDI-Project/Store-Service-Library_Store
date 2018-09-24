@@ -19,13 +19,19 @@ import java.util.*;
 
 public class Progress<E extends ICredentials> implements Iterable<TaskElement> {
 
-    private final Map<String, TaskElement> map = new HashMap<>();
+    private final Map<String, TaskElement> map = new HashMap<>(); // NOPMD only used in one thread
     private final CacheElement<E> parent;
     private int count = 0;
 
+    /**
+     * Just a simple constructor for this class
+     *
+     * @param docs The list of documents to be copied
+     * @param parent The CacheElement instance containing this Progress instance
+     */
     Progress(final List<String> docs, final CacheElement<E> parent) {
         this.parent = parent;
-        for (String it : docs) {
+        for (final String it : docs) {
             this.map.put(it, new TaskElement(it, this));
         }
     }
@@ -39,8 +45,13 @@ public class Progress<E extends ICredentials> implements Iterable<TaskElement> {
         return this.map.values();
     }
 
-    void notifyFinishedCopy() {
+    /**
+     * Called if a copy task is finished
+     */
+    void notifyFinishedCopy() { // NOPMD
         count++;
-        if (count == map.size()) this.parent.notifyAllFinished();
+        if (count == map.size()) {
+            this.parent.notifyAllFinished();
+        }
     }
 }

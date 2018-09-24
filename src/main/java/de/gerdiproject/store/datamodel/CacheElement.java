@@ -1,12 +1,12 @@
 /**
  * Copyright © 2018 Nelson Tavares de Sousa (tavaresdesousa@email.uni-kiel.de)
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,14 +35,17 @@ class CacheElement<E extends ICredentials> {
     @Setter(AccessLevel.PRIVATE)
     private Progress<E> progress;
 
-    public CacheElement(String sessionId, StoreTask task, Map<String, CacheElement<E>> cacheMap) {
+    public CacheElement(final String sessionId, final StoreTask task, final Map<String, CacheElement<E>> cacheMap) {
         this.sessionId = sessionId;
         this.cacheMap = cacheMap;
         this.task = task;
         this.progress = new Progress(this.task.getDocs(), this);
     }
 
-    void notifyAllFinished() {
+    /**
+     * Will be called if all files are completely copied
+     */
+    void notifyAllFinished() { // NOPMD
         this.setFinished(true);
     }
 }

@@ -34,6 +34,7 @@ public class GerdiKafkaConsumer extends Thread {
     private final String id;
 
     public GerdiKafkaConsumer(Queue<ResearchData> queue, String id){
+        super();
         this.queue = queue;
         this.id = id;
         Properties props = new Properties();
