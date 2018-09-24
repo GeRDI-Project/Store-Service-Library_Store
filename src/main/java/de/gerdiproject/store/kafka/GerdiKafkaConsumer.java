@@ -1,12 +1,12 @@
 /**
  * Copyright © 2018 Nelson Tavares de Sousa (tavaresdesousa@email.uni-kiel.de)
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,7 @@ public class GerdiKafkaConsumer extends Thread {
     private final KafkaConsumer<String, ByteBuffer> consumer;
     private final String id;
 
-    public GerdiKafkaConsumer(Queue<ResearchData> queue, String id){
+    public GerdiKafkaConsumer(Queue<ResearchData> queue, String id) {
         super();
         this.queue = queue;
         this.id = id;
@@ -61,11 +61,11 @@ public class GerdiKafkaConsumer extends Thread {
                     e.printStackTrace();
                 }
             }
-                if (val == null) continue;
-                boolean inserted = false; // Better strategy: Count attempts and log if it exceeds a certain threshold
-                do {
-                    inserted = queue.offer(val);
-                } while (!inserted);
+            if (val == null) continue;
+            boolean inserted = false; // Better strategy: Count attempts and log if it exceeds a certain threshold
+            do {
+                inserted = queue.offer(val);
+            } while (!inserted);
         }
     }
 }
