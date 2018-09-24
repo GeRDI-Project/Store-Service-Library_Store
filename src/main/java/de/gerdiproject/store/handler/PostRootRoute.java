@@ -20,12 +20,12 @@ import com.google.gson.GsonBuilder;
 import de.gerdiproject.store.datamodel.CacheElement;
 import de.gerdiproject.store.datamodel.ICredentials;
 import de.gerdiproject.store.datamodel.StoreTask;
-import de.gerdiproject.store.util.RandomString;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * This class represent a handler for a post request on the root URL
@@ -34,12 +34,12 @@ import java.util.Map;
  */
 public class PostRootRoute<E extends ICredentials> implements Route {
 
-    private static final RandomString RDM_GENERATOR = new RandomString();
     private final Map<String, CacheElement<E>> cacheMap;
     private final Gson gson = new GsonBuilder().create();
 
     /**
-     * Just this class's constructur
+     * Just this class's constructor
+     *
      * @param cacheMap The map which is used to cache the store requests
      */
     public PostRootRoute( Map<String, CacheElement<E>> cacheMap){
@@ -53,8 +53,8 @@ public class PostRootRoute<E extends ICredentials> implements Route {
             response.status(400);
             return null;
         }
-        String id = RDM_GENERATOR.nextString();
-        cacheMap.put(id, new CacheElement(input));
+        String id = UUID.randomUUID().toString();
+        cacheMap.put(id, new CacheElement(id, input, cacheMap));
         response.status(201);
         return "{ \"sessionId\": \"" + id + "\" }";
     }

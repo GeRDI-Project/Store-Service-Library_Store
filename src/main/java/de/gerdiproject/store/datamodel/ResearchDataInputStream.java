@@ -15,8 +15,6 @@
  */
 package de.gerdiproject.store.datamodel;
 
-import de.gerdiproject.store.datamodel.TaskElement;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -43,12 +41,8 @@ public class ResearchDataInputStream extends InputStream {
     }
 
     private void updateEntry(){
-        if (size == -1 || size == -2) return;
+        if (size == -1) return;
         this.progressEntry.setProgressInPercent((int) (copiedSize * 100 / size));
-    }
-
-    public void failed() {
-        this.progressEntry.setProgressInPercent(new Integer(-2));
     }
 
 }

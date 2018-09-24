@@ -15,11 +15,29 @@
  */
 package de.gerdiproject.store.datamodel;
 
-import lombok.Data;
-
-public @Data class TaskElement {
+public class TaskElement {
 
     private final String fileName;
+    private final transient Progress parent;
     private Integer progressInPercent = new Integer(0);
+
+    TaskElement(String fileName, Progress parent) {
+        this.fileName = fileName;
+        this.parent = parent;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public Integer getProgressInPercent() {
+        return progressInPercent;
+    }
+
+    public void setProgressInPercent(final Integer progressInPercent) {
+        this.progressInPercent = progressInPercent;
+        if (progressInPercent == 100) this.parent.notifyFinishedCopy();
+    }
+
 
 }

@@ -17,13 +17,16 @@ package de.gerdiproject.store.datamodel;
 
 import java.util.*;
 
-public class Progress implements Iterable<TaskElement> {
+public class Progress<E extends ICredentials> implements Iterable<TaskElement> {
 
     private final Map<String, TaskElement> map = new HashMap<>();
+    private final CacheElement<E> parent;
+    private int count = 0;
 
-    Progress(List<String> docs) {
+    Progress(final List<String> docs, final CacheElement<E> parent) {
+        this.parent = parent;
         for (String it : docs) {
-            this.map.put(it, new TaskElement(it));
+            this.map.put(it, new TaskElement(it, this));
         }
     }
 
@@ -34,5 +37,10 @@ public class Progress implements Iterable<TaskElement> {
 
     public Collection<TaskElement> values() {
         return this.map.values();
+    }
+
+    void notifyFinishedCopy() {
+        count++;
+        if (count == map.size()) this.parent.notifyAllFinished();
     }
 }

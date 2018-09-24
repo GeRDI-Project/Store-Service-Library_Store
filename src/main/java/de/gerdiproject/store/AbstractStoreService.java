@@ -44,7 +44,8 @@ public abstract class AbstractStoreService<E extends ICredentials> {
     private boolean running = false;
 
 
-    public AbstractStoreService(Properties props) {
+    protected AbstractStoreService(Properties props) {
+        // Run a garbage collection task every 5 minutes
         timer.schedule(new CacheGarbageCollectionTask<E>(this.CACHE_MAP), 300000, 300000);
         this.props = props;
     }
@@ -117,6 +118,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
         // Accepts new storing tasks and initializes them in the in-memory cache
         post("/", new PostRootRoute<E>(CACHE_MAP));
 
+        // Checker whether or not the user is logged in
         get("/loggedIn/:sessionId", (request, response) -> {
             CacheElement<E> element = CACHE_MAP.get(request.params("sessionId"));
             if (element == null) {
@@ -128,11 +130,13 @@ public abstract class AbstractStoreService<E extends ICredentials> {
             return "{ \"isLoggedIn\": \"" + loggedIn + "\" }";
         });
 
+        // Return a list with the progress of each element
         get("/progress/:sessionId", (request, response) -> {
             Object[] elem = CACHE_MAP.get(request.params("sessionId")).getProgress().values().toArray();
             return new GsonBuilder().create().toJson(elem);
         });
 
+        // Log in the user
         post("/login/:sessionId", (request, response) -> {
             CacheElement elem = CACHE_MAP.get(request.params("sessionId"));
             if (elem == null) {
@@ -149,12 +153,15 @@ public abstract class AbstractStoreService<E extends ICredentials> {
             }
         });
 
+        // Start the copy progress
         get("/copy/:sessionId", (request, response) -> {
             final String targetDir = request.queryParamOrDefault("dir", "/");
             final String session = request.params("sessionId");
-            final StoreTask task = CACHE_MAP.get(session).getTask();
-            final E creds = CACHE_MAP.get(session).getCredentials();
+            final CacheElement<E> cacheElement = CACHE_MAP.get(session);
+            final StoreTask task = cacheElement.getTask();
+            final E creds = cacheElement.getCredentials();
 
+            // Don't start the copy process twice
             if (task.isStarted()) {
                 return "Process already started";
             } else {
@@ -162,15 +169,16 @@ public abstract class AbstractStoreService<E extends ICredentials> {
             }
 
             this.preCopy(creds);
-            boolean acknowledgedAll = true;
-            for (TaskElement entry : CACHE_MAP.get(session).getProgress()) {
-                if (acknowledgedAll & this.copyFile(creds, targetDir, entry)) {
-                    acknowledgedAll = true;
-                } else acknowledgedAll = false;
+            boolean acknowledgedAll = true; // May be used later
+            for (TaskElement entry : cacheElement.getProgress()) {
+                if (!this.copyFile(creds, targetDir, entry)) {
+                    acknowledgedAll = false;
+                }
             }
             return "";
         });
 
+        // Returns a list of files for a given directory
         get("/files/:sessionId", (request, response) -> {
             final String dir = request.queryParamOrDefault("dir", "/");
             final E creds = CACHE_MAP.get(request.params("sessionId")).getCredentials();

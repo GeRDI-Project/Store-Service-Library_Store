@@ -20,16 +20,27 @@ import lombok.Data;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.Map;
 
-public @Data class CacheElement<E extends ICredentials> {
+public @Data
+class CacheElement<E extends ICredentials> {
 
     private final Instant timespamp = Instant.now();
     private final StoreTask task;
+    private final Map<String, CacheElement<E>> cacheMap;
+    private final String sessionId;
+    @Setter(AccessLevel.PRIVATE) private boolean finished = false;
     private E credentials;
-    @Setter(AccessLevel.PRIVATE) private Progress progress;
+    @Setter(AccessLevel.PRIVATE) private Progress<E> progress;
 
-    public CacheElement(StoreTask task) {
+    public CacheElement(String sessionId, StoreTask task, Map<String, CacheElement<E>> cacheMap) {
+        this.sessionId = sessionId;
+        this.cacheMap = cacheMap;
         this.task = task;
-        this.progress = new Progress(this.task.getDocs());
+        this.progress = new Progress(this.task.getDocs(), this);
+    }
+
+    void notifyAllFinished() {
+        this.setFinished(true);
     }
 }
