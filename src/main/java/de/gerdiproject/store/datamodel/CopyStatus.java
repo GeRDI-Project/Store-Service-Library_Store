@@ -15,18 +15,6 @@
  */
 package de.gerdiproject.store.datamodel;
 
-import lombok.Data;
-
-/**
- * This class represents an element, such as a file or subdirectory.
- *
- * @author Nelson Tavares de Sousa
- */
-public @Data(staticConstructor = "of")
-class ListElement {
-
-    private final String displayName;
-    private final String type;
-    private final String uri;
-
+public enum CopyStatus {
+    PENDING, RUNNING, UNKNOWN_SIZE, ERROR, FINISHED;
 }

@@ -1,12 +1,12 @@
 /**
  * Copyright © 2018 Nelson Tavares de Sousa (tavaresdesousa@email.uni-kiel.de)
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,8 @@ package de.gerdiproject.store;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonObject;
 import de.gerdiproject.store.datamodel.*;
 import de.gerdiproject.store.handler.PostRootRoute;
 import de.gerdiproject.store.util.CacheGarbageCollectionTask;
@@ -25,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -35,6 +39,8 @@ import static spark.Spark.*;
 /**
  * This class provides some functionality to implement a store service.
  * It also deals with some API issues, so an implementation only needs to implement the access to the storage.
+ *
+ * @author Nelson Tavares de Sousa
  *
  * @param <E> The type used to store the credentials. Must implement the ICredentials interface.
  */
@@ -92,7 +98,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
      * @param taskElement A TaskElement containing the required information on where to retrieve the research data
      * @return true if this
      */
-    protected abstract boolean copyFile(E creds, String targetDir, TaskElement taskElement);
+    protected abstract boolean copyFile(E creds, String targetDir, ResearchDataInputStream taskElement);
 
     /**
      * Returns the list of files for a requested directory.
@@ -131,7 +137,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
      */
     protected void run() {
         if (running) {
-            throw new IllegalStateException("The run method must be run only once.");
+            throw new IllegalStateException("The run method may only be executed once.");
         }
         this.running = true;
         port(5678);
@@ -155,8 +161,16 @@ public abstract class AbstractStoreService<E extends ICredentials> {
 
         // Return a list with the progress of each element
         get("/progress/:sessionId", (request, response) -> {
-            final Object[] elem = cacheMap.get(request.params("sessionId")).getProgress().values().toArray();
-            return new GsonBuilder().create().toJson(elem);
+            final List<JsonObject> list = new ArrayList<>();
+            final List<ResearchDataInputStream> elems = cacheMap.get(request.params("sessionId")).getTask().getElements();
+            for (ResearchDataInputStream elem : elems) {
+                final JsonObject obj = new JsonObject();
+                obj.addProperty("fileName", elem.getName());
+                obj.addProperty("progressInPercent", elem.getProgressInPercent());
+                obj.addProperty("state", elem.getStatus().toString());
+                list.add(obj);
+            }
+            return new GsonBuilder().create().toJson(list);
         });
 
         // Log in the user
@@ -195,7 +209,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
             final String targetDir = request.queryParamOrDefault("dir", "/");
             this.preCopy(creds);
             boolean acknowledgedAll = true; // NOPMD May be used later
-            for (final TaskElement entry : cacheElement.getProgress()) {
+            for (final ResearchDataInputStream entry : cacheElement.getTask().getElements()) {
                 if (!this.copyFile(creds, targetDir, entry)) {
                     acknowledgedAll = false;
                 }
