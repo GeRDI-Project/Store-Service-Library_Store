@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+/**
+ * This class implements an {@linkplain InputStream} for research data while added library specific logic.
+ */
 public class ResearchDataInputStream extends InputStream {
 
     private final long size;
@@ -45,10 +48,18 @@ public class ResearchDataInputStream extends InputStream {
         return inputStream.read();
     }
 
+    /**
+     * Returns the name of the file.
+     * @return The file name
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Returns the progress as percentage represented as int.
+     * @return The progress value
+     */
     public int getProgressInPercent(){
         if (status == CopyStatus.ERROR || status == CopyStatus.UNKNOWN_SIZE) {
             return 0;
@@ -56,10 +67,18 @@ public class ResearchDataInputStream extends InputStream {
         return (int) (copiedSize * 100 / size);
     }
 
+    /**
+     * Returns the state of this stream
+     * @return a {@linkplain CopyStatus} depicting the state
+     */
     public CopyStatus getStatus() {
         return this.status;
     }
 
+    /**
+     * Setter for the state
+     * @param status the new state
+     */
     public void setStatus(final CopyStatus status) {
         this.status = status;
     }

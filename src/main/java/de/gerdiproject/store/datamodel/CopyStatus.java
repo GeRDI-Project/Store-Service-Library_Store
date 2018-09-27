@@ -15,6 +15,9 @@
  */
 package de.gerdiproject.store.datamodel;
 
+/**
+ * This depicts the copy state of a research data element.
+ */
 public enum CopyStatus {
     PENDING, RUNNING, UNKNOWN_SIZE, ERROR, FINISHED;
 }

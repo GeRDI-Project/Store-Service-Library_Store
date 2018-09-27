@@ -19,16 +19,24 @@ import lombok.Data;
 
 import java.time.Instant;
 
+/**
+ * This class depicts a element which is cached by the library. It stores the task and further relevant data, such as the creation time and the corresponding credentials.
+ *
+ * @param <E> The type of the class which implements the {@linkplain ICredentials} interface and is used as credentials storage.
+ */
 public @Data
 class CacheElement<E extends ICredentials> {
 
     private final Instant timespamp = Instant.now();
     private final StoreTask task;
-    private final String sessionId;
     private E credentials;
 
-    public CacheElement(final String sessionId, final StoreTask task) {
-        this.sessionId = sessionId;
+    /**
+     *  Constructor for this class
+     *
+     * @param task The task to be cached
+     */
+    public CacheElement(final StoreTask task) {
         this.task = task;
     }
 

@@ -34,6 +34,11 @@ class StoreTask {
     private String userId;
     private boolean started = false;
 
+    /**
+     * Adds a {@linkplain ResearchDataInputStream} to the list of data to be stored.
+     *
+     * @param inputStream The instance which will be added to the list
+     */
     public void addResearchDataInputStream(final ResearchDataInputStream inputStream) {
         this.elements.add(inputStream);
     }

@@ -23,14 +23,32 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
 
+/**
+ * This class represents a deserializer for incoming requests which are represented by {@linkplain StoreTask}
+ */
 public class StoreTaskDeserializer implements JsonDeserializer<StoreTask> {
+
     @Override
     public StoreTask deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
         final JsonObject jsonObject = json.getAsJsonObject();
         final StoreTask instance = new StoreTask();
-        instance.setUserId(jsonObject.get("userId").getAsString());
-        instance.setBookmarkId(jsonObject.get("bookmarkId").getAsString());
-        instance.setBookmarkName(jsonObject.get("bookmarkName").getAsString());
+        JsonElement userId = jsonObject.get("userId");
+        if (userId == null) {
+            throw new JsonParseException("userId must not be null.");
+        }
+        instance.setUserId(userId.getAsString());
+
+        JsonElement bookmarkId = jsonObject.get("bookmarkId");
+        if (bookmarkId == null) {
+            throw new JsonParseException("bookmarkId must not be null.");
+        }
+        instance.setBookmarkId(bookmarkId.getAsString());
+
+        JsonElement bookmarkName = jsonObject.get("bookmarkName");
+        if (bookmarkName == null) {
+            throw new JsonParseException("bookmarkName must not be null.");
+        }
+        instance.setBookmarkName(bookmarkName.getAsString());
 
         final JsonArray docs = jsonObject.get("docs").getAsJsonArray();
         for (JsonElement elem : docs) {
@@ -38,7 +56,7 @@ public class StoreTaskDeserializer implements JsonDeserializer<StoreTask> {
                 final ResearchDataInputStream in = new ResearchDataInputStream(new URL(elem.getAsString()), instance);
                 instance.addResearchDataInputStream(in);
             } catch (IOException e) {
-                throw new IllegalArgumentException("At least one element in docs is not a valid URL");
+                throw new JsonParseException("At least one element in docs is not a valid URL");
             }
         }
 

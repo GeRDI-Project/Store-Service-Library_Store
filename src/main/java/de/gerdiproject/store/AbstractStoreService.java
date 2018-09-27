@@ -17,17 +17,16 @@ package de.gerdiproject.store;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonObject;
 import de.gerdiproject.store.datamodel.*;
 import de.gerdiproject.store.handler.PostRootRoute;
 import de.gerdiproject.store.util.CacheGarbageCollectionTask;
+import de.gerdiproject.store.util.ResearchDataInputStreamSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +50,11 @@ public abstract class AbstractStoreService<E extends ICredentials> {
      */
     private static final Logger LOGGER = LoggerFactory
             .getLogger(AbstractStoreService.class);
+
+    /**
+     * A builder for Gson instances.
+     */
+    private static final GsonBuilder GSON_BUILDER = new GsonBuilder();
     /**
      * A map used as a cache
      */
@@ -71,6 +75,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
     protected AbstractStoreService() {
         // Run a garbage collection task every 5 minutes
         timer.schedule(new CacheGarbageCollectionTask<E>(this.cacheMap), 300000, 300000);
+        GSON_BUILDER.registerTypeAdapter(ResearchDataInputStream.class, new ResearchDataInputStreamSerializer());
     }
 
     /**
@@ -161,16 +166,8 @@ public abstract class AbstractStoreService<E extends ICredentials> {
 
         // Return a list with the progress of each element
         get("/progress/:sessionId", (request, response) -> {
-            final List<JsonObject> list = new ArrayList<>();
             final List<ResearchDataInputStream> elems = cacheMap.get(request.params("sessionId")).getTask().getElements();
-            for (ResearchDataInputStream elem : elems) {
-                final JsonObject obj = new JsonObject();
-                obj.addProperty("fileName", elem.getName());
-                obj.addProperty("progressInPercent", elem.getProgressInPercent());
-                obj.addProperty("state", elem.getStatus().toString());
-                list.add(obj);
-            }
-            return new GsonBuilder().create().toJson(list);
+            return GSON_BUILDER.create().toJson(elems);
         });
 
         // Log in the user

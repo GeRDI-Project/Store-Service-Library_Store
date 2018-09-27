@@ -24,6 +24,11 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.TimerTask;
 
+/**
+ * This class represents a collector which removes obsolete cache elements from the list
+ *
+ * @param <E> The type used to store the credentials. Must implement the ICredentials interface.
+ */
 public class CacheGarbageCollectionTask<E extends ICredentials> extends TimerTask {
 
     private static final Logger LOGGER = LoggerFactory
@@ -31,7 +36,7 @@ public class CacheGarbageCollectionTask<E extends ICredentials> extends TimerTas
     private final Map<String, CacheElement<E>> map;
 
     /**
-     * This class represents a collector which removes obsolete cache elements from the list
+     * The default constructor.
      *
      * @param map The cache map used to store the requests
      */

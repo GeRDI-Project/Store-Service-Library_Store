@@ -60,7 +60,7 @@ public class PostRootRoute<E extends ICredentials> implements Route {
             return null;
         }
         final String identifier = UUID.randomUUID().toString();
-        cacheMap.put(identifier, new CacheElement(identifier, input));
+        cacheMap.put(identifier, new CacheElement(input));
         response.status(201);
         return "{ \"sessionId\": \"" + identifier + "\" }";
     }
