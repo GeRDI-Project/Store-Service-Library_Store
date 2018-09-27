@@ -22,6 +22,8 @@ import java.time.Instant;
 /**
  * This class depicts a element which is cached by the library. It stores the task and further relevant data, such as the creation time and the corresponding credentials.
  *
+ * @author Nelson Tavares de Sousa
+ *
  * @param <E> The type of the class which implements the {@linkplain ICredentials} interface and is used as credentials storage.
  */
 public @Data

@@ -25,6 +25,8 @@ import java.lang.reflect.Type;
 
 /**
  * This class represents a serializer for the {@linkplain ResearchDataInputStream}.
+ *
+ * @author Nelson Tavares de Sousa
  */
 public class ResearchDataInputStreamSerializer implements JsonSerializer<ResearchDataInputStream> {
 

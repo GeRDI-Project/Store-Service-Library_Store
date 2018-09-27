@@ -18,6 +18,8 @@ package de.gerdiproject.store.datamodel;
 /**
  * This interface represents a basic credential format to log user into a store provider.
  * Implementations must implement this interface.
+ *
+ * @author Nelson Tavares de Sousa
  */
 public interface ICredentials {
 }

@@ -25,6 +25,8 @@ import java.net.URL;
 
 /**
  * This class represents a deserializer for incoming requests which are represented by {@linkplain StoreTask}
+ *
+ * @author Nelson Tavares de Sousa
  */
 public class StoreTaskDeserializer implements JsonDeserializer<StoreTask> {
 

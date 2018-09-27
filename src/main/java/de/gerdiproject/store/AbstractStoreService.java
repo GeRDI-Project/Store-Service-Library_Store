@@ -54,7 +54,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
     /**
      * A builder for Gson instances.
      */
-    private static final GsonBuilder GSON_BUILDER = new GsonBuilder();
+    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(ResearchDataInputStream.class, new ResearchDataInputStreamSerializer()).create();
     /**
      * A map used as a cache
      */
@@ -75,7 +75,6 @@ public abstract class AbstractStoreService<E extends ICredentials> {
     protected AbstractStoreService() {
         // Run a garbage collection task every 5 minutes
         timer.schedule(new CacheGarbageCollectionTask<E>(this.cacheMap), 300000, 300000);
-        GSON_BUILDER.registerTypeAdapter(ResearchDataInputStream.class, new ResearchDataInputStreamSerializer());
     }
 
     /**
@@ -167,7 +166,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
         // Return a list with the progress of each element
         get("/progress/:sessionId", (request, response) -> {
             final List<ResearchDataInputStream> elems = cacheMap.get(request.params("sessionId")).getTask().getElements();
-            return GSON_BUILDER.create().toJson(elems);
+            return GSON.toJson(elems);
         });
 
         // Log in the user

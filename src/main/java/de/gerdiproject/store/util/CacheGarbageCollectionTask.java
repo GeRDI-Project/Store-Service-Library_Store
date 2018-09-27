@@ -27,6 +27,8 @@ import java.util.TimerTask;
 /**
  * This class represents a collector which removes obsolete cache elements from the list
  *
+ * @author Nelson Tavares de Sousa
+ *
  * @param <E> The type used to store the credentials. Must implement the ICredentials interface.
  */
 public class CacheGarbageCollectionTask<E extends ICredentials> extends TimerTask {

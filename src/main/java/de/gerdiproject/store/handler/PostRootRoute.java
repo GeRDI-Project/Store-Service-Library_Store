@@ -32,6 +32,8 @@ import java.util.UUID;
 /**
  * This class represent a handler for a post request on the root URL
  *
+ * @author Nelson Tavares de Sousa
+ *
  * @param <E> The type used to store the credentials. Must implement the ICredentials interface.
  */
 public class PostRootRoute<E extends ICredentials> implements Route {

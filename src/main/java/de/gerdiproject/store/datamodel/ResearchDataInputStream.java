@@ -20,7 +20,9 @@ import java.io.InputStream;
 import java.net.URL;
 
 /**
- * This class implements an {@linkplain InputStream} for research data while added library specific logic.
+ * This class implements an {@linkplain InputStream} for research data and adds library specific logic.
+ *
+ * @author Nelson Tavares de Sousa
  */
 public class ResearchDataInputStream extends InputStream {
 
