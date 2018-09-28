@@ -17,7 +17,6 @@ package de.gerdiproject.store;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import de.gerdiproject.store.datamodel.*;
 import de.gerdiproject.store.handler.PostRootRoute;
 import de.gerdiproject.store.util.CacheGarbageCollectionTask;
@@ -27,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
