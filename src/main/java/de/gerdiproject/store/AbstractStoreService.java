@@ -52,7 +52,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
             .getLogger(AbstractStoreService.class);
 
     /**
-     * A builder for Gson instances.
+     * A Gson instance for serializing {@linkplain ResearchDataInputStream}.
      */
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(ResearchDataInputStream.class, new ResearchDataInputStreamSerializer()).create();
     /**
