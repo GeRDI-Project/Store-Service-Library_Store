@@ -65,6 +65,8 @@ public class ResearchDataInputStream extends InputStream {
     public int getProgressInPercent(){
         if (status == CopyStatus.ERROR || status == CopyStatus.UNKNOWN_SIZE) {
             return 0;
+        } else if (status == CopyStatus.FINISHED) {
+            return 100;
         }
         return (int) (copiedSize * 100 / size);
     }
@@ -82,6 +84,7 @@ public class ResearchDataInputStream extends InputStream {
      * @param status the new state
      */
     public void setStatus(final CopyStatus status) {
+        if (this.status == CopyStatus.UNKNOWN_SIZE && status != CopyStatus.ERROR && status != CopyStatus.FINISHED) return;
         this.status = status;
     }
 
