@@ -13,7 +13,7 @@
 
     <groupId>de.gerdi-project.store</groupId>
     <artifactId>store-service-library</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.3.0</version>
 
     <name>GeRDI Store Service Library</name>
     <description>This library provides some functionality to implement an own Store Service which can be integrated into the GeRDI infrastructure.</description>
