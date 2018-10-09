@@ -16,6 +16,7 @@
 package de.gerdiproject.store.kafka;
 
 
+
 public class GerdiKafkaConsumer extends Thread {
 //
 //    private final Queue<ResearchData> queue;
