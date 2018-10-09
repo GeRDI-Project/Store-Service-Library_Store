@@ -137,6 +137,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
      * This method starts the webserver and initializes all predefined routes.
      * It must be executed after the inialization of this class.
      */
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     protected void run() {
         if (running) {
             throw new IllegalStateException("The run method may only be executed once.");

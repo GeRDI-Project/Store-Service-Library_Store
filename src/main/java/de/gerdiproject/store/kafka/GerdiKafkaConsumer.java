@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.Queue;
 
+@SuppressWarnings("PMD")
 public class GerdiKafkaConsumer extends Thread {
 
     private final Queue<ResearchData> queue;
