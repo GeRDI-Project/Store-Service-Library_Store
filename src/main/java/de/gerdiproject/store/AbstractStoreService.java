@@ -122,7 +122,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
 
     /**
      * Sets the folder in classpath serving static files. Observe: this method
-     * must be called before all other methods. {@see Spark}
+     * must be called before all other methods.
      *
      * @param folder the folder in classpath.
      */

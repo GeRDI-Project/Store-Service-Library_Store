@@ -9,5 +9,8 @@
         <module name="store-service-library" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="store-service-library" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
