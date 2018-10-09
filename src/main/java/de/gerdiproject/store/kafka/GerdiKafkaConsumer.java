@@ -16,7 +16,19 @@
 package de.gerdiproject.store.kafka;
 
 
+import de.gerdiproject.store.data.model.ResearchData;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Properties;
+import java.util.Queue;
+
+@SuppressWarnings("PMD")
 public class GerdiKafkaConsumer extends Thread {
 //
 //    private final Queue<ResearchData> queue;
