@@ -33,7 +33,7 @@ public class ResearchDataInputStream extends InputStream {
     private CopyStatus status = CopyStatus.PENDING;
 
     @Deprecated
-    public ResearchDataInputStream(final URL url, final StoreTask storeTask) throws IOException {
+    public ResearchDataInputStream(final URL url, final StoreTask storeTask) throws IOException { // NOPMD ignore unused parameter, method is deprecated anyway
         this(url);
     }
 
