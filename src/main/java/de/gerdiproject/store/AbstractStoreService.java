@@ -121,6 +121,16 @@ public abstract class AbstractStoreService<E extends ICredentials> {
     }
 
     /**
+     * This method is executed if a new folder is requested.
+     *
+     * @param dir The directory where the new folder is requested to be created
+     * @param dirName The name of the requested folder
+     * @param creds The stored credentials, may be null if no credentials were stored
+     * @return true on success, false otherwise
+     */
+    protected abstract boolean createDir(final String dir, final String dirName, final E creds);
+
+    /**
      * Sets the folder in classpath serving static files. Observe: this method
      * must be called before all other methods.
      *
@@ -223,5 +233,19 @@ public abstract class AbstractStoreService<E extends ICredentials> {
             final List<ListElement> ret = listFiles(dir, creds);
             return new Gson().toJson(ret);
         });
+
+        // Create new dir
+        get("/createdir/:sessionId/:dirname", (request, response) -> {
+            final E creds = cacheMap.get(request.params("sessionId")).getCredentials();
+            if (creds == null) {
+                response.status(403);
+                return "Not logged in";
+            }
+            final String dirName = request.params("dirname");
+            final String dir = request.queryParamOrDefault("dir", "/");
+            final boolean created = createDir(dir, dirName, creds);
+            return "{ \"dirCreated\": \"" + created + "\" }";
+        });
     }
+
 }
