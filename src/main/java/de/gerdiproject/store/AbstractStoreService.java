@@ -203,7 +203,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
                 response.status(404);
                 return "Session does not exist.";
             }
-            final E credentials = this.login(getUserProfile(request, response).getSubject(), request, response);
+            final E credentials = this.login(getUserProfile(request, response).getAttribute("preferred_username").toString(), request, response);
             if (credentials == null) {
                 if (LOGGER.isWarnEnabled()) {
                     LOGGER.warn("Login failed for Session " + request.queryParams("sessionId"));
