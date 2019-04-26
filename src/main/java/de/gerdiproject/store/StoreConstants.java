@@ -16,5 +16,9 @@
 package de.gerdiproject.store;
 
 public class StoreConstants {
-    // TODO
+    //
+
+    // OpenID Infos
+    public static final String OPENID_JWK_ENDPOINT = System.getenv()
+            .getOrDefault("OPENID_JWK_ENDPOINT", "http://keycloak-http.default.svc.cluster.local/admin/auth/realms/master/protocol/openid-connect/certs");
 }

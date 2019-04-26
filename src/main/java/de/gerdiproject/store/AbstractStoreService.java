@@ -19,8 +19,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.gerdiproject.store.datamodel.*;
 import de.gerdiproject.store.handler.PostRootRoute;
+import de.gerdiproject.store.pac4j.GerdiConfigFactory;
 import de.gerdiproject.store.util.CacheGarbageCollectionTask;
 import de.gerdiproject.store.util.ResearchDataInputStreamSerializer;
+import org.pac4j.core.config.Config;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.jwt.profile.JwtProfile;
+import org.pac4j.sparkjava.SecurityFilter;
+import org.pac4j.sparkjava.SparkWebContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -28,6 +36,7 @@ import spark.Response;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -90,7 +99,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
      * @param res A instance of SparkJava's Response class
      * @return An instance of a newly created credential.
      */
-    protected abstract E login(Request req, Response res);
+    protected abstract E login(String userId, Request req, Response res);
 
     /**
      * This method is called for each research data element to be copied.
@@ -155,6 +164,15 @@ public abstract class AbstractStoreService<E extends ICredentials> {
         this.running = true;
         port(5678);
 
+        // Build the security filter
+        final Config config = new GerdiConfigFactory().build();
+        final SecurityFilter secFilter = new SecurityFilter(config, "DirectBearerAuthClient");
+
+        // Ignore trailing slashes and add security check for JWT
+        before((req, res) -> {
+            secFilter.handle(req, res);
+        });
+
         // Accepts new storing tasks and initializes them in the in-memory cache
         post("/", new PostRootRoute<E>(cacheMap));
 
@@ -185,7 +203,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
                 response.status(404);
                 return "Session does not exist.";
             }
-            final E credentials = this.login(request, response);
+            final E credentials = this.login(getUserProfile(request, response).getSubject(), request, response);
             if (credentials == null) {
                 if (LOGGER.isWarnEnabled()) {
                     LOGGER.warn("Login failed for Session " + request.queryParams("sessionId"));
@@ -248,4 +266,11 @@ public abstract class AbstractStoreService<E extends ICredentials> {
         });
     }
 
+    private final JwtProfile getUserProfile(Request req, Response res) {
+        WebContext context = new SparkWebContext(req, res);
+        ProfileManager manager = new ProfileManager(context);
+        Optional<CommonProfile> profile = manager.get(true);
+        JwtProfile jwtProfile = (JwtProfile) profile.get();
+        return jwtProfile;
+    }
 }

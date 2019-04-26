@@ -13,7 +13,7 @@
 
     <groupId>de.gerdi-project.store</groupId>
     <artifactId>store-service-library</artifactId>
-    <version>0.4.0-beta1</version>
+    <version>0.4.1-beta1</version>
 
     <name>GeRDI Store Service Library</name>
     <description>This library provides some functionality to implement an own Store Service which can be integrated into the GeRDI infrastructure.</description>
@@ -66,6 +66,26 @@
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
             <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>spark-pac4j</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-http</artifactId>
+            <version>3.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-jwt</artifactId>
+            <version>3.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-core</artifactId>
+            <version>3.6.1</version>
         </dependency>
     </dependencies>
 
