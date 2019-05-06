@@ -16,5 +16,7 @@
 package de.gerdiproject.store;
 
 public class StoreConstants {
-    // TODO
+
+    public static final String SESSION_ID = "sessionId";
+    public static final String DIR_QUERYPARAM = "dir";
 }
