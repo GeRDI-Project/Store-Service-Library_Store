@@ -158,7 +158,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
         post("/", new PostRootRoute<E>(cacheMap));
 
         // Checker whether or not the user is logged in
-        get("/loggedIn/:" + StoreConstants.SESSION_ID, (request, response) -> {
+        get("/loggedIn/:" + StoreConstants.SESSION_ID, (Request request, Response response) -> {
             final CacheElement<E> element = cacheMap.get(request.params(StoreConstants.SESSION_ID));
             if (element == null) {
                 response.status(404);
@@ -172,13 +172,13 @@ public abstract class AbstractStoreService<E extends ICredentials> {
         });
 
         // Return a list with the progress of each element
-        get("/progress/:" + StoreConstants.SESSION_ID, (request, response) -> {
+        get("/progress/:" + StoreConstants.SESSION_ID, (Request request, Response response) -> {
             final List<ResearchDataInputStream> elems = cacheMap.get(request.params(StoreConstants.SESSION_ID)).getTask().getElements();
             return GSON.toJson(elems);
         });
 
         // Log in the user
-        post("/login/:" + StoreConstants.SESSION_ID, (request, response) -> {
+        post("/login/:" + StoreConstants.SESSION_ID, (Request request, Response response) -> {
             final CacheElement elem = cacheMap.get(request.params(StoreConstants.SESSION_ID));
             if (elem == null) {
                 response.status(404);
@@ -197,7 +197,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
         });
 
         // Start the copy progress
-        get("/copy/:" + StoreConstants.SESSION_ID, (request, response) -> {
+        get("/copy/:" + StoreConstants.SESSION_ID, (Request request, Response response) -> {
             final String session = request.params(StoreConstants.SESSION_ID);
             final CacheElement<E> cacheElement = cacheMap.get(session);
             final StoreTask task = cacheElement.getTask();
@@ -222,7 +222,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
         });
 
         // Returns a list of files for a given directory
-        get("/files/:" + StoreConstants.SESSION_ID, (request, response) -> {
+        get("/files/:" + StoreConstants.SESSION_ID, (Request request, Response response) -> {
             final E creds = cacheMap.get(request.params(StoreConstants.SESSION_ID)).getCredentials();
             if (creds == null) {
                 response.status(403);
@@ -234,7 +234,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
         });
 
         // Create new dir
-        get("/createdir/:" + StoreConstants.SESSION_ID + "/:dirname", (request, response) -> {
+        get("/createdir/:" + StoreConstants.SESSION_ID + "/:dirname", (Request request, Response response) -> {
             final E creds = cacheMap.get(request.params(StoreConstants.SESSION_ID)).getCredentials();
             if (creds == null) {
                 response.status(403);
