@@ -55,7 +55,7 @@ public class StoreTaskDeserializer implements JsonDeserializer<StoreTask> {
         final JsonArray docs = jsonObject.get("docs").getAsJsonArray();
         for (JsonElement elem : docs) {
             try {
-                final ResearchDataInputStream in = new ResearchDataInputStream(new URL(elem.getAsString()), instance);
+                final ResearchDataInputStream in = new ResearchDataInputStream(new URL(elem.getAsString()));
                 instance.addResearchDataInputStream(in);
             } catch (IOException e) {
                 throw new JsonParseException("At least one element in docs is not a valid URL");

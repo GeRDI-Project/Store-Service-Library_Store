@@ -15,6 +15,19 @@
  */
 package de.gerdiproject.store;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+/**
+ * This class provides some constants.
+ *
+ * @author Nelson Tavares de Sousa
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StoreConstants {
-    // TODO
+
+    public static final String SESSION_ID = "sessionId";
+    public static final String DIR_QUERYPARAM = "dir";
+    public static final String IS_LOGGED_IN_RESPONSE = "{ \"isLoggedIn\" : \"%b\" }";
+    public static final String DIR_CREATED_RESPONSE = "{ \"dirCreated\" : \"%b\" }";
 }

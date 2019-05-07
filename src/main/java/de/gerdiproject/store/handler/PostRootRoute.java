@@ -55,7 +55,7 @@ public class PostRootRoute<E extends ICredentials> implements Route {
     }
 
     @Override
-    public Object handle(final Request request, final Response response) throws Exception {
+    public Object handle(final Request request, final Response response) {
         final StoreTask input = gson.fromJson(request.body(), StoreTask.class);
         if (input.getElements().isEmpty() || input.getUserId() == null || input.getUserId().isEmpty()) {
             response.status(400);

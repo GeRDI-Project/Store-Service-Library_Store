@@ -13,7 +13,7 @@
 
     <groupId>de.gerdi-project.store</groupId>
     <artifactId>store-service-library</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.4.0-beta1</version>
 
     <name>GeRDI Store Service Library</name>
     <description>This library provides some functionality to implement an own Store Service which can be integrated into the GeRDI infrastructure.</description>
@@ -58,11 +58,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>de.gerdi-project.store</groupId>
-            <artifactId>store-data-model</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
             <version>1.8.2</version>
@@ -79,6 +74,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
                 <configuration>
                     <source>8</source>
                     <target>8</target>
@@ -106,6 +102,42 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Add javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- Add sources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                </configuration>
             </plugin>
         </plugins>
     </build>
