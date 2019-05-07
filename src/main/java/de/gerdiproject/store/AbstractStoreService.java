@@ -173,7 +173,12 @@ public abstract class AbstractStoreService<E extends ICredentials> {
 
         // Return a list with the progress of each element
         get("/progress/:" + StoreConstants.SESSION_ID, (Request request, Response response) -> {
-            final List<ResearchDataInputStream> elems = cacheMap.get(request.params(StoreConstants.SESSION_ID)).getTask().getElements();
+            CacheElement<E> cacheElement = cacheMap.get(request.params(StoreConstants.SESSION_ID));
+            if (cacheElement == null) {
+                response.status(404);
+                return "Session does not exist.";
+            }
+            final List<ResearchDataInputStream> elems = cacheElement.getTask().getElements();
             return GSON.toJson(elems);
         });
 
