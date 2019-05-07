@@ -156,7 +156,6 @@ public abstract class AbstractStoreService<E extends ICredentials> {
      * This method starts the webserver and initializes all predefined routes.
      * It must be executed after the inialization of this class.
      */
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     protected void run() {
         if (running) {
             throw new IllegalStateException("The run method may only be executed once.");
@@ -177,93 +176,110 @@ public abstract class AbstractStoreService<E extends ICredentials> {
         post("/", new PostRootRoute<E>(cacheMap));
 
         // Checker whether or not the user is logged in
-        get("/loggedIn/:sessionId", (request, response) -> {
-            final CacheElement<E> element = cacheMap.get(request.params("sessionId"));
-            if (element == null) {
-                response.status(404);
-                if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn("Attempt to access non-existent Session " + request.params("sessionId"));
-                }
-                return "Session ID does not exist";
-            }
-            final boolean loggedIn = this.isLoggedIn(element.getCredentials());
-            return "{ \"isLoggedIn\": \"" + loggedIn + "\" }";
-        });
+        get("/loggedIn/:" + StoreConstants.SESSION_ID, this::getLoggedIn);
 
         // Return a list with the progress of each element
-        get("/progress/:sessionId", (request, response) -> {
-            final List<ResearchDataInputStream> elems = cacheMap.get(request.params("sessionId")).getTask().getElements();
-            return GSON.toJson(elems);
-        });
+        get("/progress/:" + StoreConstants.SESSION_ID, this::getProgress);
 
         // Log in the user
-        post("/login/:sessionId", (request, response) -> {
-            final CacheElement elem = cacheMap.get(request.params("sessionId"));
-            if (elem == null) {
-                response.status(404);
-                return "Session does not exist.";
-            }
-            final E credentials = this.login(getUserProfile(request, response).getAttribute("preferred_username").toString(), request, response);
-            if (credentials == null) {
-                if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn("Login failed for Session " + request.queryParams("sessionId"));
-                }
-                return "Login failed";
-            } else {
-                elem.setCredentials(credentials);
-                return "Login Successful";
-            }
-        });
+        post("/login/:" + StoreConstants.SESSION_ID, this::postLogin);
 
         // Start the copy progress
-        get("/copy/:sessionId", (request, response) -> {
-            final String session = request.params("sessionId");
-            final CacheElement<E> cacheElement = cacheMap.get(session);
-            final StoreTask task = cacheElement.getTask();
-
-            // Don't start the copy process twice
-            if (task.isStarted()) {
-                return "Process already started";
-            } else {
-                task.setStarted(true);
-            }
-
-            final E creds = cacheElement.getCredentials();
-            final String targetDir = request.queryParamOrDefault("dir", "/");
-            this.preCopy(creds);
-            boolean acknowledgedAll = true; // NOPMD May be used later
-            for (final ResearchDataInputStream entry : cacheElement.getTask().getElements()) {
-                if (!this.copyFile(creds, targetDir, entry)) {
-                    acknowledgedAll = false;
-                }
-            }
-            return "";
-        });
+        get("/copy/:" + StoreConstants.SESSION_ID, this::getCopy);
 
         // Returns a list of files for a given directory
-        get("/files/:sessionId", (request, response) -> {
-            final E creds = cacheMap.get(request.params("sessionId")).getCredentials();
-            if (creds == null) {
-                response.status(403);
-                return "Not logged in";
-            }
-            final String dir = request.queryParamOrDefault("dir", "/");
-            final List<ListElement> ret = listFiles(dir, creds);
-            return new Gson().toJson(ret);
-        });
+        get("/files/:" + StoreConstants.SESSION_ID, this::getFiles);
 
         // Create new dir
-        get("/createdir/:sessionId/:dirname", (request, response) -> {
-            final E creds = cacheMap.get(request.params("sessionId")).getCredentials();
-            if (creds == null) {
-                response.status(403);
-                return "Not logged in";
+        get("/createdir/:" + StoreConstants.SESSION_ID + "/:dirname", this::getCreatedir);
+    }
+
+    private Object getCreatedir(Request request, Response response) {
+        final E creds = cacheMap.get(request.params(StoreConstants.SESSION_ID)).getCredentials();
+        if (creds == null) {
+            response.status(403);
+            return "Not logged in";
+        }
+        final String dirName = request.params("dirname");
+        final String dir = request.queryParamOrDefault(StoreConstants.DIR_QUERYPARAM, "/");
+        final boolean created = createDir(dir, dirName, creds);
+        return String.format(StoreConstants.DIR_CREATED_RESPONSE, created);
+    }
+
+    private Object getFiles(Request request, Response response) {
+        final E creds = cacheMap.get(request.params(StoreConstants.SESSION_ID)).getCredentials();
+        if (creds == null) {
+            response.status(403);
+            return "Not logged in";
+        }
+        final String dir = request.queryParamOrDefault(StoreConstants.DIR_QUERYPARAM, "/");
+        final List<ListElement> ret = listFiles(dir, creds);
+        return new Gson().toJson(ret);
+    }
+
+    private Object getCopy(Request request, Response response) {
+        final String session = request.params(StoreConstants.SESSION_ID);
+        final CacheElement<E> cacheElement = cacheMap.get(session);
+        final StoreTask task = cacheElement.getTask();
+
+        // Don't start the copy process twice
+        if (task.isStarted()) {
+            return "Process already started";
+        } else {
+            task.setStarted(true);
+        }
+
+        final E creds = cacheElement.getCredentials();
+        final String targetDir = request.queryParamOrDefault(StoreConstants.DIR_QUERYPARAM, "/");
+        this.preCopy(creds);
+        boolean acknowledgedAll = true; // NOPMD May be used later
+        for (final ResearchDataInputStream entry : cacheElement.getTask().getElements()) {
+            if (!this.copyFile(creds, targetDir, entry)) {
+                acknowledgedAll = false;
             }
-            final String dirName = request.params("dirname");
-            final String dir = request.queryParamOrDefault("dir", "/");
-            final boolean created = createDir(dir, dirName, creds);
-            return "{ \"dirCreated\": \"" + created + "\" }";
-        });
+        }
+        return "";
+    }
+
+    private Object postLogin(Request request, Response response) {
+        final CacheElement elem = cacheMap.get(request.params(StoreConstants.SESSION_ID));
+        if (elem == null) {
+            response.status(404);
+            return "Session does not exist.";
+        }
+        final E credentials = this.login(getUserProfile(request, response).getAttribute("preferred_username").toString(), request, response);
+        if (credentials == null) {
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn("Login failed for Session " + request.queryParams(StoreConstants.SESSION_ID));
+            }
+            return "Login failed";
+        } else {
+            elem.setCredentials(credentials);
+            return "Login Successful";
+        }
+    }
+
+    private Object getProgress(Request request, Response response) {
+        CacheElement<E> cacheElement = cacheMap.get(request.params(StoreConstants.SESSION_ID));
+        if (cacheElement == null) {
+            response.status(404);
+            return "Session does not exist.";
+        }
+        final List<ResearchDataInputStream> elems = cacheElement.getTask().getElements();
+        return GSON.toJson(elems);
+    }
+
+    private Object getLoggedIn(Request request, Response response)  {
+        final CacheElement<E> element = cacheMap.get(request.params(StoreConstants.SESSION_ID));
+        if (element == null) {
+            response.status(404);
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn("Attempt to access non-existent Session " + request.params(StoreConstants.SESSION_ID));
+            }
+            return "Session ID does not exist";
+        }
+        final boolean loggedIn = this.isLoggedIn(element.getCredentials());
+        return String.format(StoreConstants.IS_LOGGED_IN_RESPONSE, loggedIn);
     }
 
     private final JwtProfile getUserProfile(Request req, Response res) {

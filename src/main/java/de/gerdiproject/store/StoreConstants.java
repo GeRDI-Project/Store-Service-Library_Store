@@ -15,10 +15,22 @@
  */
 package de.gerdiproject.store;
 
-public class StoreConstants {
-    //
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+/**
+ * This class provides some constants.
+ *
+ * @author Nelson Tavares de Sousa
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class StoreConstants {
     // OpenID Infos
     public static final String OPENID_JWK_ENDPOINT = System.getenv()
             .getOrDefault("OPENID_JWK_ENDPOINT", "http://keycloak-http.default.svc.cluster.local/admin/auth/realms/master/protocol/openid-connect/certs");
+
+    public static final String SESSION_ID = "sessionId";
+    public static final String DIR_QUERYPARAM = "dir";
+    public static final String IS_LOGGED_IN_RESPONSE = "{ \"isLoggedIn\" : \"%b\" }";
+    public static final String DIR_CREATED_RESPONSE = "{ \"dirCreated\" : \"%b\" }";
 }
