@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import de.gerdiproject.store.GerdiStoreException;
 import de.gerdiproject.store.StoreConstants;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
@@ -52,8 +53,7 @@ public class GerdiConfigFactory implements ConfigFactory {
         try {
             jwks = readUrl(StoreConstants.OPENID_JWK_ENDPOINT);
         } catch (Exception e) {
-            LOGGER.error("Could not retrieve JWKs.", e);
-            System.exit(1);
+            throw new GerdiStoreException("Could not retrieve JWKs. Initialization aborted.", e);
         }
         Gson gson = new Gson();
         final JsonElement data = new JsonParser().parse(jwks);
@@ -80,10 +80,8 @@ public class GerdiConfigFactory implements ConfigFactory {
      * @throws Exception
      */
     private static String readUrl(String urlString) throws Exception {
-        BufferedReader reader = null;
-        try {
-            URL url = new URL(urlString);
-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
+        URL url = new URL(urlString);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
             StringBuffer buffer = new StringBuffer();
             int read;
             char[] chars = new char[1024];
@@ -91,9 +89,6 @@ public class GerdiConfigFactory implements ConfigFactory {
                 buffer.append(chars, 0, read);
 
             return buffer.toString();
-        } finally {
-            if (reader != null)
-                reader.close();
         }
     }
 

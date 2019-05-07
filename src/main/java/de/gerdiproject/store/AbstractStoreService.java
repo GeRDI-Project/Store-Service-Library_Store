@@ -162,12 +162,12 @@ public abstract class AbstractStoreService<E extends ICredentials> {
             throw new IllegalStateException("The run method may only be executed once.");
         }
         this.running = true;
-        port(5678);
 
         // Build the security filter
         final Config config = new GerdiConfigFactory().build();
         final SecurityFilter secFilter = new SecurityFilter(config, "DirectBearerAuthClient");
 
+        port(5678);
         // Ignore trailing slashes and add security check for JWT
         before((req, res) -> {
             secFilter.handle(req, res);
