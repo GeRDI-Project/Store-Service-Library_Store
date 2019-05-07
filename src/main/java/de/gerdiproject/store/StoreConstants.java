@@ -28,4 +28,6 @@ public class StoreConstants {
 
     public static final String SESSION_ID = "sessionId";
     public static final String DIR_QUERYPARAM = "dir";
+    public static final String IS_LOGGED_IN_RESPONSE = "{ \"isLoggedIn\" : \"%b\" }";
+    public static final String DIR_CREATED_RESPONSE = "{ \"dirCreated\" : \"%b\" }";
 }

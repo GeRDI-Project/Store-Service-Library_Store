@@ -168,7 +168,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
                 return "Session ID does not exist";
             }
             final boolean loggedIn = this.isLoggedIn(element.getCredentials());
-            return "{ \"isLoggedIn\": \"" + loggedIn + "\" }";
+            return String.format(StoreConstants.IS_LOGGED_IN_RESPONSE, loggedIn);
         });
 
         // Return a list with the progress of each element
@@ -248,7 +248,7 @@ public abstract class AbstractStoreService<E extends ICredentials> {
             final String dirName = request.params("dirname");
             final String dir = request.queryParamOrDefault(StoreConstants.DIR_QUERYPARAM, "/");
             final boolean created = createDir(dir, dirName, creds);
-            return "{ \"dirCreated\": \"" + created + "\" }";
+            return String.format(StoreConstants.DIR_CREATED_RESPONSE, created);
         });
     }
 
