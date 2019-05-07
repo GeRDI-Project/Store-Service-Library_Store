@@ -39,6 +39,8 @@ import java.security.KeyPair;
 
 /**
  * This class represents a configuration factory used to build configurations for pac4j used by this service.
+ *
+ * @author Nelson Tavares de Sousa
  */
 public class GerdiConfigFactory implements ConfigFactory {
 
