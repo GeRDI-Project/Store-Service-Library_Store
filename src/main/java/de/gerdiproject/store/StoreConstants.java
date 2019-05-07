@@ -25,6 +25,9 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StoreConstants {
+    // OpenID Infos
+    public static final String OPENID_JWK_ENDPOINT = System.getenv()
+            .getOrDefault("OPENID_JWK_ENDPOINT", "http://keycloak-http.default.svc.cluster.local/admin/auth/realms/master/protocol/openid-connect/certs");
 
     public static final String SESSION_ID = "sessionId";
     public static final String DIR_QUERYPARAM = "dir";
