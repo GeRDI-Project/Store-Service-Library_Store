@@ -15,6 +15,15 @@
  */
 package de.gerdiproject.store;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+/**
+ * This class provides some constants.
+ *
+ * @author Nelson Tavares de Sousa
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StoreConstants {
 
     public static final String SESSION_ID = "sessionId";
