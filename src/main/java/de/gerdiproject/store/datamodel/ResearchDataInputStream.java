@@ -31,6 +31,7 @@ public class ResearchDataInputStream extends InputStream {
     private final String name;
     private long copiedSize = 0;
     private CopyStatus status = CopyStatus.PENDING;
+    private URL url;
 
     @Deprecated
     public ResearchDataInputStream(final URL url, final StoreTask storeTask) throws IOException { // NOPMD ignore unused parameter, method is deprecated anyway
@@ -39,6 +40,7 @@ public class ResearchDataInputStream extends InputStream {
 
     public ResearchDataInputStream(final URL url) throws IOException {
         super();
+        this.url=url;
         this.name = url.getFile();
         this.inputStream = url.openStream();
         this.size = url.openConnection().getContentLengthLong();
@@ -51,6 +53,22 @@ public class ResearchDataInputStream extends InputStream {
     public int read() throws IOException {
         this.copiedSize++;
         return inputStream.read();
+    }
+    
+    
+    /**
+     * Returns the inputStream
+     * @return The inputStream
+     */
+    public InputStream getInputStream() {
+    	return inputStream;
+    }
+    /**
+     * Returns the URL
+     * @return The URL
+     */
+    public URL getUrl() {
+    	return url;
     }
 
     /**

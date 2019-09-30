@@ -1,5 +1,5 @@
 /**
- * Copyright © 2019 Nelson Tavares de Sousa (tavaresdesousa@email.uni-kiel.de)
+ * Copyright © 2018 Nelson Tavares de Sousa (tavaresdesousa@email.uni-kiel.de)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
